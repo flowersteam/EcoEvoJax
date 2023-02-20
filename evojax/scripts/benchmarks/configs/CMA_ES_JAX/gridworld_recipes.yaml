@@ -1,0 +1,20 @@
+es_name: "CMA_ES_JAX"
+#problem_type: "gridworld_recipes"
+problem_type: "gridworld_recipes_reward_item"
+normalize: false
+es_config:
+  pop_size: 12
+policy: "MetaRNN2"
+hidden_size: 5
+hidden_size_2: 64
+hidden_layers: [32]
+num_tests: 100
+n_repeats: 12
+max_iter: 10000
+test_interval: 100
+log_interval: 25
+seed: 1
+gpu_id: [0,1]
+debug: false
+spawn_prob: 0.005
+model_dir: ""

@@ -1,0 +1,26 @@
+gridworld_recipes: 2022-07-08 14:06:10,550 [INFO] EvoJAX gridworld_recipes
+gridworld_recipes: 2022-07-08 14:06:10,553 [INFO] ==============================
+gridworld_recipes: 2022-07-08 14:06:17,701 [INFO] Start to train for 6000 iterations.
+gridworld_recipes: 2022-07-08 14:06:39,481 [INFO] Iter=25, size=100, max=0.9200, avg=0.5881, min=0.3300, std=0.1058
+gridworld_recipes: 2022-07-08 14:06:54,386 [INFO] Iter=50, size=100, max=1.8800, avg=1.2955, min=0.8000, std=0.2403
+gridworld_recipes: 2022-07-08 14:07:09,564 [INFO] Iter=75, size=100, max=3.3200, avg=2.4420, min=1.5700, std=0.3873
+gridworld_recipes: 2022-07-08 14:07:24,651 [INFO] Iter=100, size=100, max=4.9600, avg=3.9432, min=2.6800, std=0.4493
+gridworld_recipes: 2022-07-08 14:07:28,852 [INFO] [TEST] Iter=100, #tests=100, max=24.0000 avg=7.3400, min=0.0000, std=7.7048
+gridworld_recipes: 2022-07-08 14:07:43,786 [INFO] Iter=125, size=100, max=8.1000, avg=6.6848, min=5.1300, std=0.6433
+gridworld_recipes: 2022-07-08 14:07:58,504 [INFO] Iter=150, size=100, max=12.3900, avg=10.7354, min=8.9700, std=0.8046
+gridworld_recipes: 2022-07-08 14:08:13,401 [INFO] Iter=175, size=100, max=13.2300, avg=11.4139, min=9.2500, std=0.8748
+gridworld_recipes: 2022-07-08 14:08:28,657 [INFO] Iter=200, size=100, max=18.7800, avg=16.8986, min=14.7200, std=0.7578
+gridworld_recipes: 2022-07-08 14:08:28,741 [INFO] [TEST] Iter=200, #tests=100, max=63.0000 avg=17.7400, min=0.0000, std=20.7652
+gridworld_recipes: 2022-07-08 14:08:43,580 [INFO] Iter=225, size=100, max=19.0400, avg=17.5410, min=15.4500, std=0.7878
+gridworld_recipes: 2022-07-08 14:08:58,486 [INFO] Iter=250, size=100, max=23.7000, avg=22.9295, min=21.2400, std=0.4460
+gridworld_recipes: 2022-07-08 14:09:13,212 [INFO] Iter=275, size=100, max=21.3000, avg=19.8611, min=18.3800, std=0.5239
+gridworld_recipes: 2022-07-08 14:09:28,297 [INFO] Iter=300, size=100, max=22.2000, avg=21.0959, min=19.1400, std=0.5298
+gridworld_recipes: 2022-07-08 14:09:28,382 [INFO] [TEST] Iter=300, #tests=100, max=75.0000 avg=19.8100, min=0.0000, std=25.7215
+gridworld_recipes: 2022-07-08 14:09:43,375 [INFO] Iter=325, size=100, max=27.0300, avg=25.9534, min=24.9100, std=0.4682
+gridworld_recipes: 2022-07-08 14:09:58,364 [INFO] Iter=350, size=100, max=28.6400, avg=27.5680, min=23.7300, std=0.7286
+gridworld_recipes: 2022-07-08 14:10:13,264 [INFO] Iter=375, size=100, max=34.9000, avg=33.8232, min=32.1500, std=0.5886
+gridworld_recipes: 2022-07-08 14:10:28,162 [INFO] Iter=400, size=100, max=28.1900, avg=27.4984, min=26.2600, std=0.3616
+gridworld_recipes: 2022-07-08 14:10:28,244 [INFO] [TEST] Iter=400, #tests=100, max=73.0000 avg=28.0500, min=0.0000, std=30.0730
+gridworld_recipes: 2022-07-08 14:16:10,714 [INFO] EvoJAX gridworld_recipes
+gridworld_recipes: 2022-07-08 14:16:10,732 [INFO] ==============================
+gridworld_recipes: 2022-07-08 14:16:17,963 [INFO] Start to train for 6000 iterations.

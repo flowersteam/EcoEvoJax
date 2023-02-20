@@ -1,0 +1,29 @@
+es_name: "ARS"
+problem_type: "gridworld_recipes"
+normalize: False
+es_config:
+  pop_size: 512
+  elite_ratio: 0.05
+  init_stdev: 0.05
+  decay_stdev: 0.999
+  limit_stdev: 0.001
+  optimizer: "adam"
+  optimizer_config:
+    lrate_init: 0.01
+    lrate_decay: 0.999
+    lrate_limit: 0.001
+    beta_1: 0.99
+    beta_2: 0.999
+    eps: 1e-08
+num_tests: 128
+n_repeats: 16
+max_iter: 3000
+test_interval: 100
+log_interval: 20
+seed: 42
+gpu_id: [0, 1]
+policy: "MetaRNN"
+hidden_size: 64
+debug: false
+spawn_prob: 0.005
+model_dir: ""

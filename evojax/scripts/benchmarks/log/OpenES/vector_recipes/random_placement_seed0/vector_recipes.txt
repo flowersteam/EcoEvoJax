@@ -1,0 +1,44 @@
+vector_recipes: 2022-12-14 12:20:03,984 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 12:20:03,984 [INFO] ==============================
+vector_recipes: 2022-12-14 12:20:38,303 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 12:20:38,304 [INFO] ==============================
+vector_recipes: 2022-12-14 12:20:41,032 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 12:21:46,030 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 12:21:46,030 [INFO] ==============================
+vector_recipes: 2022-12-14 12:21:48,741 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 12:23:04,939 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 12:23:04,939 [INFO] ==============================
+vector_recipes: 2022-12-14 12:23:07,607 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 12:25:13,667 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 12:25:13,667 [INFO] ==============================
+vector_recipes: 2022-12-14 12:25:16,302 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 12:26:14,834 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 12:26:14,834 [INFO] ==============================
+vector_recipes: 2022-12-14 12:26:17,457 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 12:26:53,260 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 12:26:53,260 [INFO] ==============================
+vector_recipes: 2022-12-14 12:26:56,014 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 12:27:57,763 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 12:27:57,763 [INFO] ==============================
+vector_recipes: 2022-12-14 12:28:00,400 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 12:29:48,929 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 12:29:48,930 [INFO] ==============================
+vector_recipes: 2022-12-14 12:29:51,567 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 12:31:41,608 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 12:31:41,608 [INFO] ==============================
+vector_recipes: 2022-12-14 12:31:44,230 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 13:59:11,512 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 13:59:11,512 [INFO] ==============================
+vector_recipes: 2022-12-14 13:59:14,155 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 13:59:59,348 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 13:59:59,348 [INFO] ==============================
+vector_recipes: 2022-12-14 14:00:23,596 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 14:00:23,596 [INFO] ==============================
+vector_recipes: 2022-12-14 14:00:27,155 [INFO] Start to train for 10000 iterations.
+vector_recipes: 2022-12-14 23:42:25,452 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 23:42:25,452 [INFO] ==============================
+vector_recipes: 2022-12-14 23:42:39,348 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 23:42:39,349 [INFO] ==============================
+vector_recipes: 2022-12-14 23:43:01,719 [INFO] EvoJAX vector_recipes
+vector_recipes: 2022-12-14 23:43:01,719 [INFO] ==============================
+vector_recipes: 2022-12-14 23:43:04,686 [INFO] Start to train for 10000 iterations.

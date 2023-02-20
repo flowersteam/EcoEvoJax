@@ -1,0 +1,34 @@
+es_name: "OpenES"
+problem_type: "gridworld_recipes"
+#problem_type: "gridworld_recipes_reward_item"
+nb_items: 3
+normalize: false
+es_config:
+  pop_size: 100
+  init_stdev: 0.07
+  decay_stdev: 0.9996
+  limit_stdev: 0.01
+  optimizer: "adam"
+  optimizer_config:
+    lrate_init: 0.02
+    lrate_decay: 0.9998
+    lrate_limit: 0.001
+    momentum: 0.0
+policy: "MetaRNN_t"
+hidden_size: 128
+#hidden_size_2: 64
+hidden_layers: [64,32]
+num_tests: 100
+n_repeats: 100
+max_iter: 10000
+test_interval: 100
+log_interval: 25
+episode_len: 200
+seed: 0
+gpu_id: [0,1,2,3]
+debug: false
+spawn_prob: 0.005
+model_dir: ""
+encoder: False
+encoder_size: 64
+search_eval_id: "random_placement_seed0"

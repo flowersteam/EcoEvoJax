@@ -1,0 +1,36 @@
+debug: 0
+encoder: 0
+encoder_size: 64
+es_config:
+  decay_stdev: 0.9996
+  init_stdev: 0.07
+  limit_stdev: 0.01
+  optimizer: adam
+  optimizer_config:
+    lrate_decay: 0.9998
+    lrate_init: 0.02
+    lrate_limit: 0.001
+    momentum: 0.0
+  pop_size: 100
+es_name: OpenES
+gpu_id:
+- 0
+- 1
+- 2
+- 3
+hidden_layers:
+- 64
+- 32
+hidden_size: 128
+log_interval: 25
+max_iter: 6000
+model_dir: ''
+n_repeats: 128
+normalize: 0
+num_tests: 100
+policy: MetaRNN_t
+problem_type: gridworld_recipes
+search_eval_id: seed1
+seed: 10
+spawn_prob: 0.005
+test_interval: 100

@@ -1,0 +1,21 @@
+agent_view: 7
+eval_freq: 50
+
+gen_length: 1000
+num_gens: 1000
+
+grid_length: 400
+grid_width: 200
+
+nb_agents: 1000
+niches_scale: 200
+regrowth_scale: 0.002
+max_age: 650
+time_reproduce: 140
+time_death: 200
+energy_decay: 0.025
+spontaneous_regrow: 0.00005
+wall_kill: True
+
+seed: 0
+

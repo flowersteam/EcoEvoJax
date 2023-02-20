@@ -1,0 +1,47 @@
+
+
+
+
+* ARCHITECTURE:
+	SIZE OF THE RNN
+	NUMBER OF RNN (and how they're stacked)
+	Input CNN
+	
+	add as observation the last observation as well, should help. Tried very quickly and did not help with the current architecture and training but i think it has some potential to help.
+* Outer inner loop algorithm:
+	- Genetic algorithm/population based algorithm instead of evolutionary strategies based on gradient  
+		(quickly tried with simple genetic algorithm but slow and seemed to struggle not get really good, but i also tried to run first evolutionary strategies and then from the checkpoint try these genetic algorithm and in one seed i've observed a small improvement but still not getting out of local optima )
+	
+	- RL in the outer loop, however in the long term it might be a problem as we want to emerge curiosity , memory which are long term . And so with classical RL we might struggle with credit assignement problem
+	
+	- paper varibad:
+		-same idea as RL² but the RNN is explicitely an encoder (a VAE to be precize to account for uncertainties ), and also add a decoder which try to predict the next reward and state from the embedding ( to be precise a vector sampled from the encoder )  and is used as an additionary loss to help the training of the encoder
+
+* Task distrib
+	- 0+1 and bigger chain 
+* Optimization
+	- promote diversity
+
+* Scaling (to encourage generalization)
+	- Map size (from experience made the training harder and longer to converge
+	- number of items (same )
+	- number of distractors (is more or less equivalent to number of items, bc if they are not in the possible recipe books, the algorithm will easily meta learn that those items are useless)
+	
+
+* Comparisons 
+	- RL1
+	-
+* Analysis :
+	- LSTM hidden state, tried but not that informative
+	
+	
+I guess as RL1 is working well the problem is as stated in the paper : the chicken egg problem, and so either the encoder does not learn a useful representation, or the policy head does not learn how to use this representaiton properly or both. 
+
+I think varibad is an interesting thing to try. I don't knowif the evolutionary algorithm will fit with it 
+
+
+
+"For variBAD this is less of a problem, since we train the latent embedding to represent the task, and only the task." (because maybe less policy computation in the rnn and so less instabilities, more space for information on the task) which have some potential as it could help with the chicken eggs problem
+
+
+I propose trying varibad on the taks 0 and see if it performs well easily.

@@ -1,0 +1,68 @@
+This post is a draft of ideas so may not be totally clear so don't hesitate to ask for precision if you're curious. (and most of the time the opinion on the directions are intuitions, and even when i tested it i only tested it with a specific algorithm and so it might work well with other). Also don't hesitate if you have more ideas.
+
+Here are the potential directions to try to solve the bias problem. Which is the fact that we're currently not able to train an agent on 3 possible recipes, resulting in an agent with some bias toward one of the recipe, and which tries the wrong recipe several time in an episode . Even the 2possible recipe case and the pick the right item task are prone to bias toward one recipe (or item) , and only work with a specific network architecture .
+
+# Potential directions to explore 
+
+* ARCHITECTURE:
+    - The size of the RNN hidden state. With bigger size means more capacity but harder to train , while small size should incentivize to compress information about the task. However what's complicated is that the RNN hidden state may contain computation about the policy in addition to computation on the task belief. We currently incentivize a little bit to learn the task belief in the RNN by also feeding the observation  to the layer after the RNN.
+![architecture|238x415, 75%](upload://dtiGRPawVeKWGLdCbRQgOlZa5Ha.png)
+ 
+
+     - Number of RNN (and how they're stacked), most of RL paper that use RNN in their architecture to compute some task belief (/have some adaptation during the episode), and especially paper on meta learning/POMDP seem to use only 1 RNN. However the paper Learning to reinforcement learn seem to use 2 stacked LSTM for more complex task. 
+     - Size of the encoder of the state , or maybe no encoder. Size of the policy head (however as the RL¹ case, where we input the perfect task information in the obs, seems to work i believe the size of the policy head is ok )
+     -  Use CNN to encode the state. 
+     - Add as observation the last observation as well, should help. Tried very quickly and did not help with the current architecture and training but i think it has some potential to help. Especially so that the agent does not have to remember the two items before they merge giving the reward at next step.
+
+* Outer inner loop algorithm:
+	- Genetic algorithm/population based algorithm instead of evolutionary strategies based on gradient  
+		-(quickly tried with simple genetic algorithm but slow and seemed to struggle not get really good, but i also tried to run first evolutionary strategies and then from the checkpoint try these genetic algorithm and in one seed i've observed a small improvement but still not getting out of local optima )
+                - An interesting possibility is MAP ELite but it needs interesting descriptors of the behavior
+
+	
+	- RL in the outer loop, however in the long term it might be a problem as we want to emerge curiosity , memory which are long term . And so with classical RL we might struggle with credit assignement problem
+	
+	- paper varibad:  https://arxiv.org/abs/1910.08348
+		-same idea as RL² but the RNN is explicitely an encoder (a VAE to be precize to account for uncertainties ), and also add a decoder which try to predict the next reward and state from the embedding ( to be precise a vector sampled from the encoder )  and is used as an additionary loss to help the training of the encoder
+
+* Task distrib
+	- 0+1 , train on both the pick the right item (0 ) and recipe(1) task at the same time. However as transfer from 0 to 1 task (using an agent trained on 0 as init for the training on 1) was not very useful , I wonder if it will not only make the training harder (because wider diversity of task) without much benefit, but that's true that it could incentivize the emergence of memory as it's a skill useful for both.  But again the transfer was only done with the current architecture+algo/optim so maybe changing this may make it useful.
+  -  Deeper recipe trees (but requires more items, or no consumption of items)
+  - Curriculum from 2 recipes to 3 recipes, it worked on some seeds on the static items case but didn't work most of the time i tried it. So i think it may be useful but we may have something to change with a bigger impact. 
+ 
+
+
+
+* Scaling (to encourage generalization)
+	- Map size  which makes the training harder and longer as we need bigger episode . it would make mistakes more costly as it would require more time to travel between items. But there is already a quite high cost of mistake tand so hat would seem weird to me that an agent trained on bigger map would  learn memory while an agent trained on a smaller map would not. So in the end i think that it will only make the training longer so maybe not a first thing to try.
+	- number of items ,  it should make memory a much better option as with a lot of item not memorizing the right recipe would mean trying again a lot of possible recipes and so a huge loss of time. However, it makes the task harder so harder for the agent to train, and so might be too hard for the agent to learn because it increases the number of recipes. (Because if the items are only distractors see point below.) . And making a curriculum of number of item would lead us again being stuck on 3 items. More recipes book also means that an agent biased toward one recipe book will be very bad in average .
+	- Number of distractors, if those items are not in a possible recipe books, the algorithm will easily meta learn that those items are useless, and so they bring nothing to our current problem.
+	
+
+* Comparisons 
+	- RL¹ , which is using the same network or the same policy head but adding in the observation the complete task information, so there is no need for exploration and the agent has total knowledge on the task.
+* Analysis :
+	- LSTM hidden state, tried but not that informative as very tangled with policy computation, but again varibad can help here.
+	
+
+# Opinion on what to try next
+
+I guess as RL1 is working well the problem is as stated in the paper sent by Eleni: http://arxiv.org/abs/2008.02790 the chicken egg problem, and so either the encoder does not learn a useful representation, or the policy head does not learn how to use this representaiton properly or both. 
+
+I think varibad is an interesting thing to try. I don't know if the evolutionary algorithm will fit with it 
+"For variBAD this is less of a problem, since we train the latent embedding to represent the task, and only the task." Because  if i understood correctly maybe with this there is less policy computation in the rnn and so less instabilities and also more space for information on the task. This have some potential as it could help with the chicken eggs problem, because we clearly incentivize the encoder to learn the task belief. (and also the fact that it learns a probablity distrib can be interesting)
+
+So i think that trying varibad on the 0 task first and see if it make the training more robust to architecture change etc can be interesting. 
+I also think that genetic algorithm with more diversity would be an interesting thing to add.
+
+The fact that the training on 2 possible recipe 
+
+
+
+
+# Previous video i didn't share here 
+A video of a working agent with 2 possible recipes. In this test of the agent i also added catastrophic changes of recipe during the episode, while there is no such change during training (the recipe is fixed during an episode). And we can clearly see that the agent is still able to adapt and change recipe. The agent sometimes struggle to pick the right item when the item are on top of each other( on the same cell) as it has a 50% chance of taking one or the other.
+![catastrophic|480x432, 75%](upload://thuFPZL9AQYUb4hluHOZ9Dy7Mbl.gif)
+
+
+526.65

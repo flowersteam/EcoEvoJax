@@ -1,0 +1,76 @@
+gridworld_recipes: 2022-07-06 17:12:23,567 [INFO] EvoJAX gridworld_recipes
+gridworld_recipes: 2022-07-06 17:12:23,567 [INFO] ==============================
+gridworld_recipes: 2022-07-06 17:12:32,979 [INFO] Start to train for 6000 iterations.
+gridworld_recipes: 2022-07-06 17:13:03,298 [INFO] Iter=25, size=100, max=1.4141, avg=1.0284, min=0.6797, std=0.1630
+gridworld_recipes: 2022-07-06 17:13:24,359 [INFO] Iter=50, size=100, max=3.6016, avg=2.5342, min=1.4688, std=0.3581
+gridworld_recipes: 2022-07-06 17:13:45,532 [INFO] Iter=75, size=100, max=7.3281, avg=5.7297, min=3.0469, std=0.8249
+gridworld_recipes: 2022-07-06 17:14:07,024 [INFO] Iter=100, size=100, max=11.4297, avg=8.9935, min=5.5859, std=1.1317
+gridworld_recipes: 2022-07-06 17:14:12,266 [INFO] [TEST] Iter=100, #tests=100, max=25.0000 avg=13.3100, min=3.0000, std=5.0807
+gridworld_recipes: 2022-07-06 17:14:33,569 [INFO] Iter=125, size=100, max=15.7344, avg=13.3089, min=9.7344, std=1.1841
+gridworld_recipes: 2022-07-06 17:14:54,855 [INFO] Iter=150, size=100, max=20.3203, avg=17.5536, min=12.1016, std=1.4767
+gridworld_recipes: 2022-07-06 17:15:16,226 [INFO] Iter=175, size=100, max=25.2109, avg=22.4004, min=10.3438, std=2.0722
+gridworld_recipes: 2022-07-06 17:15:37,951 [INFO] Iter=200, size=100, max=30.1406, avg=26.9670, min=20.2500, std=2.0006
+gridworld_recipes: 2022-07-06 17:15:38,147 [INFO] [TEST] Iter=200, #tests=100, max=58.0000 avg=32.5700, min=10.0000, std=9.5302
+gridworld_recipes: 2022-07-06 17:15:59,401 [INFO] Iter=225, size=100, max=36.5703, avg=33.4719, min=25.4297, std=2.2356
+gridworld_recipes: 2022-07-06 17:16:21,159 [INFO] Iter=250, size=100, max=42.1172, avg=38.6945, min=32.1953, std=1.7644
+gridworld_recipes: 2022-07-06 17:16:42,534 [INFO] Iter=275, size=100, max=46.1250, avg=43.6231, min=39.0781, std=1.4092
+gridworld_recipes: 2022-07-06 17:17:03,984 [INFO] Iter=300, size=100, max=50.6094, avg=47.8630, min=43.0781, std=1.5873
+gridworld_recipes: 2022-07-06 17:17:04,180 [INFO] [TEST] Iter=300, #tests=100, max=81.0000 avg=54.7400, min=27.0000, std=16.1689
+gridworld_recipes: 2022-07-06 17:17:25,375 [INFO] Iter=325, size=100, max=54.5703, avg=50.8809, min=44.0469, std=1.8469
+gridworld_recipes: 2022-07-06 17:17:47,286 [INFO] Iter=350, size=100, max=57.4375, avg=54.3860, min=47.7578, std=1.7421
+gridworld_recipes: 2022-07-06 17:18:08,703 [INFO] Iter=375, size=100, max=60.4453, avg=58.1932, min=52.7656, std=1.1910
+gridworld_recipes: 2022-07-06 17:18:30,471 [INFO] Iter=400, size=100, max=63.6875, avg=61.7255, min=56.0391, std=1.1549
+gridworld_recipes: 2022-07-06 17:18:30,667 [INFO] [TEST] Iter=400, #tests=100, max=82.0000 avg=63.5400, min=27.0000, std=18.0069
+gridworld_recipes: 2022-07-06 17:18:52,574 [INFO] Iter=425, size=100, max=63.2734, avg=61.2850, min=52.9922, std=1.4939
+gridworld_recipes: 2022-07-06 17:19:14,027 [INFO] Iter=450, size=100, max=64.6719, avg=63.4468, min=60.7812, std=0.7572
+gridworld_recipes: 2022-07-06 17:19:35,508 [INFO] Iter=475, size=100, max=65.1562, avg=64.1268, min=60.3516, std=0.6976
+gridworld_recipes: 2022-07-06 17:19:57,065 [INFO] Iter=500, size=100, max=64.1641, avg=63.3329, min=59.0938, std=0.7089
+gridworld_recipes: 2022-07-06 17:19:57,262 [INFO] [TEST] Iter=500, #tests=100, max=82.0000 avg=64.7600, min=37.0000, std=16.2697
+gridworld_recipes: 2022-07-06 17:20:18,626 [INFO] Iter=525, size=100, max=67.9297, avg=67.0392, min=64.4062, std=0.4816
+gridworld_recipes: 2022-07-06 17:20:39,992 [INFO] Iter=550, size=100, max=67.4688, avg=66.8920, min=65.8047, std=0.3139
+gridworld_recipes: 2022-07-06 17:21:01,254 [INFO] Iter=575, size=100, max=63.1250, avg=62.5371, min=59.9453, std=0.4384
+gridworld_recipes: 2022-07-06 17:21:22,933 [INFO] Iter=600, size=100, max=66.4531, avg=65.7438, min=65.0547, std=0.2651
+gridworld_recipes: 2022-07-06 17:21:23,128 [INFO] [TEST] Iter=600, #tests=100, max=82.0000 avg=66.2100, min=42.0000, std=15.3221
+gridworld_recipes: 2022-07-06 17:21:44,409 [INFO] Iter=625, size=100, max=65.0547, avg=64.4253, min=63.5781, std=0.2983
+gridworld_recipes: 2022-07-06 17:22:05,733 [INFO] Iter=650, size=100, max=66.6719, avg=66.1231, min=65.3516, std=0.2717
+gridworld_recipes: 2022-07-06 17:22:27,149 [INFO] Iter=675, size=100, max=65.2500, avg=64.7407, min=63.2500, std=0.3409
+gridworld_recipes: 2022-07-06 17:22:48,533 [INFO] Iter=700, size=100, max=67.0156, avg=66.3813, min=64.5625, std=0.3596
+gridworld_recipes: 2022-07-06 17:22:48,732 [INFO] [TEST] Iter=700, #tests=100, max=84.0000 avg=65.7500, min=39.0000, std=16.0545
+gridworld_recipes: 2022-07-06 17:23:10,512 [INFO] Iter=725, size=100, max=64.9062, avg=64.2654, min=63.6172, std=0.2733
+gridworld_recipes: 2022-07-06 17:23:32,343 [INFO] Iter=750, size=100, max=64.7266, avg=64.0852, min=61.6172, std=0.4126
+gridworld_recipes: 2022-07-06 17:23:53,477 [INFO] Iter=775, size=100, max=68.0859, avg=67.4696, min=66.4219, std=0.2841
+gridworld_recipes: 2022-07-06 17:24:14,956 [INFO] Iter=800, size=100, max=67.4844, avg=66.9062, min=66.2344, std=0.2435
+gridworld_recipes: 2022-07-06 17:24:15,155 [INFO] [TEST] Iter=800, #tests=100, max=82.0000 avg=65.3800, min=37.0000, std=15.6274
+gridworld_recipes: 2022-07-06 17:24:36,864 [INFO] Iter=825, size=100, max=67.5000, avg=67.0573, min=65.8047, std=0.3005
+gridworld_recipes: 2022-07-06 17:24:58,366 [INFO] Iter=850, size=100, max=65.1328, avg=64.6261, min=63.1328, std=0.3029
+gridworld_recipes: 2022-07-06 17:25:19,865 [INFO] Iter=875, size=100, max=65.9609, avg=65.4495, min=64.3984, std=0.2889
+gridworld_recipes: 2022-07-06 17:25:41,160 [INFO] Iter=900, size=100, max=67.2500, avg=66.7573, min=65.4688, std=0.2777
+gridworld_recipes: 2022-07-06 17:25:41,357 [INFO] [TEST] Iter=900, #tests=100, max=82.0000 avg=65.0400, min=39.0000, std=16.0355
+gridworld_recipes: 2022-07-06 17:26:02,863 [INFO] Iter=925, size=100, max=68.2734, avg=67.8141, min=66.8438, std=0.2656
+gridworld_recipes: 2022-07-06 17:26:24,396 [INFO] Iter=950, size=100, max=67.0703, avg=66.4336, min=65.1406, std=0.2891
+gridworld_recipes: 2022-07-06 17:26:45,825 [INFO] Iter=975, size=100, max=67.1172, avg=66.6798, min=64.7031, std=0.2932
+gridworld_recipes: 2022-07-06 17:27:07,217 [INFO] Iter=1000, size=100, max=67.3438, avg=66.8906, min=66.4609, std=0.1831
+gridworld_recipes: 2022-07-06 17:27:07,415 [INFO] [TEST] Iter=1000, #tests=100, max=82.0000 avg=65.1800, min=40.0000, std=15.4980
+gridworld_recipes: 2022-07-06 17:27:28,424 [INFO] Iter=1025, size=100, max=68.4609, avg=67.9980, min=66.8672, std=0.2646
+gridworld_recipes: 2022-07-06 17:27:49,834 [INFO] Iter=1050, size=100, max=64.7031, avg=64.3256, min=63.5625, std=0.2032
+gridworld_recipes: 2022-07-06 17:28:11,369 [INFO] Iter=1075, size=100, max=69.7344, avg=69.0084, min=67.6484, std=0.3668
+gridworld_recipes: 2022-07-06 17:28:32,899 [INFO] Iter=1100, size=100, max=66.3281, avg=65.6894, min=65.0000, std=0.2836
+gridworld_recipes: 2022-07-06 17:28:33,095 [INFO] [TEST] Iter=1100, #tests=100, max=82.0000 avg=69.7500, min=42.0000, std=13.2366
+gridworld_recipes: 2022-07-06 17:28:54,652 [INFO] Iter=1125, size=100, max=66.3359, avg=65.7702, min=64.7656, std=0.3272
+gridworld_recipes: 2022-07-06 17:29:16,131 [INFO] Iter=1150, size=100, max=68.0391, avg=67.4963, min=66.6328, std=0.2864
+gridworld_recipes: 2022-07-06 17:29:37,677 [INFO] Iter=1175, size=100, max=66.3047, avg=65.5424, min=64.7109, std=0.3113
+gridworld_recipes: 2022-07-06 17:29:59,229 [INFO] Iter=1200, size=100, max=68.6641, avg=68.0351, min=65.3125, std=0.4681
+gridworld_recipes: 2022-07-06 17:29:59,429 [INFO] [TEST] Iter=1200, #tests=100, max=82.0000 avg=67.7000, min=42.0000, std=14.1163
+gridworld_recipes: 2022-07-06 17:30:20,838 [INFO] Iter=1225, size=100, max=65.8516, avg=65.0974, min=64.4609, std=0.2927
+gridworld_recipes: 2022-07-06 17:30:42,167 [INFO] Iter=1250, size=100, max=68.6641, avg=68.1234, min=66.7656, std=0.2926
+gridworld_recipes: 2022-07-06 17:31:03,823 [INFO] Iter=1275, size=100, max=68.9531, avg=68.0347, min=66.1016, std=0.4936
+gridworld_recipes: 2022-07-06 17:31:25,590 [INFO] Iter=1300, size=100, max=67.4766, avg=66.7719, min=65.6172, std=0.3349
+gridworld_recipes: 2022-07-06 17:31:25,786 [INFO] [TEST] Iter=1300, #tests=100, max=84.0000 avg=68.3900, min=45.0000, std=12.5275
+gridworld_recipes: 2022-07-06 17:31:47,132 [INFO] Iter=1325, size=100, max=69.4375, avg=68.4331, min=65.5547, std=0.5196
+gridworld_recipes: 2022-07-06 17:32:08,976 [INFO] Iter=1350, size=100, max=69.3516, avg=68.6409, min=67.8125, std=0.3398
+gridworld_recipes: 2022-07-06 17:32:30,419 [INFO] Iter=1375, size=100, max=68.4531, avg=67.6784, min=66.4922, std=0.3530
+gridworld_recipes: 2022-07-06 17:32:51,810 [INFO] Iter=1400, size=100, max=67.3984, avg=66.4431, min=64.9922, std=0.4007
+gridworld_recipes: 2022-07-06 17:32:52,006 [INFO] [TEST] Iter=1400, #tests=100, max=82.0000 avg=67.7900, min=49.0000, std=11.2954
+gridworld_recipes: 2022-07-06 17:33:13,522 [INFO] Iter=1425, size=100, max=71.2344, avg=70.6529, min=69.6875, std=0.3642
+gridworld_recipes: 2022-07-06 17:33:34,928 [INFO] Iter=1450, size=100, max=69.0859, avg=68.4781, min=67.4922, std=0.2995
+gridworld_recipes: 2022-07-06 17:33:56,441 [INFO] Iter=1475, size=100, max=69.3203, avg=68.7448, min=67.9609, std=0.2602
