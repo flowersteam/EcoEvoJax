@@ -61,6 +61,7 @@ def simulate(project_dir):
     keep_max_rewards = []
 
     timesteps = list(range(config["num_timesteps"]))
+    vid = VideoWriter(project_dir + "/train/media/training.mp4", 20.0)
 
     # ----- main simulation begins -----
     for timestep in timesteps:
@@ -68,29 +69,25 @@ def simulate(project_dir):
 
         accumulated_rewards = jnp.zeros(config["nb_agents"])
 
+        next_key, key = random.split(key)
+
+        state, reward, _ = env.step(state)
+        accumulated_rewards = accumulated_rewards + reward
+
         if timestep % config["eval_freq"] == 0:
-            vid = VideoWriter(project_dir + "/train/media/gen_" + str(timestep) + ".mp4", 20.0)
+            # every eval_freq generations we save the video of the generation
+            rgb_im = state.state[:, :, :3]
+            rgb_im = jnp.clip(rgb_im, 0, 1)
 
-        for i in range(config["gen_length"]):
-            next_key, key = random.split(key)
+            # change color scheme to white green and black
+            rgb_im = jnp.clip(rgb_im + jnp.expand_dims(state.state[:, :, 1], axis=-1), 0, 1)
+            rgb_im = rgb_im.at[:, :, 1].set(0)
+            rgb_im = 1 - rgb_im
+            rgb_im = rgb_im - jnp.expand_dims(state.state[:, :, 0], axis=-1)
+            rgb_im = np.repeat(rgb_im, 2, axis=0)
+            rgb_im = np.repeat(rgb_im, 2, axis=1)
 
-            state, reward, _ = env.step(state)
-            accumulated_rewards = accumulated_rewards + reward
-
-            if timestep % config["eval_freq"] == 0:
-                # every eval_freq generations we save the video of the generation
-                rgb_im = state.state[:, :, :3]
-                rgb_im = jnp.clip(rgb_im, 0, 1)
-
-                # change color scheme to white green and black
-                rgb_im = jnp.clip(rgb_im + jnp.expand_dims(state.state[:, :, 1], axis=-1), 0, 1)
-                rgb_im = rgb_im.at[:, :, 1].set(0)
-                rgb_im = 1 - rgb_im
-                rgb_im = rgb_im - jnp.expand_dims(state.state[:, :, 0], axis=-1)
-                rgb_im = np.repeat(rgb_im, 2, axis=0)
-                rgb_im = np.repeat(rgb_im, 2, axis=1)
-
-                vid.add(rgb_im)
+            vid.add(rgb_im)
 
         keep_mean_rewards.append(np.mean(accumulated_rewards))
         keep_max_rewards.append(np.max(accumulated_rewards))
@@ -98,12 +95,11 @@ def simulate(project_dir):
         if timestep % config["eval_freq"] == 0:
 
             # save training data and plots
-            vid.close()
             with open(project_dir + "/train/data/gen_" + str(timestep) + ".pkl", "wb") as f:
                 pickle.dump({"mean_rewards": keep_mean_rewards,
                              "max_rewards": keep_max_rewards}, f)
 
-            save_model(model_dir=project_dir + "/train/models", model_name="gen_" + str(gen), params=params)
+            save_model(model_dir=project_dir + "/train/models", model_name="step_" + str(timestep), params=params)
 
             plt.plot(range(len(keep_mean_rewards)), keep_mean_rewards, label="mean")
             plt.plot(range(len(keep_max_rewards)), keep_max_rewards, label="max")

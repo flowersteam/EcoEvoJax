@@ -6,9 +6,11 @@ import yaml
 from evojax.task.base import TaskState
 from flax.struct import dataclass
 import jax.numpy as jnp
+
 sys.path.append(os.getcwd())
 from source.natural_env import simulate
 from source.lab_env import eval_pretrained
+
 
 # these classes are used in the lab environment
 @dataclass
@@ -20,6 +22,7 @@ class AgentStates_noparam(object):
     time_alive: jnp.uint16
     time_under_level: jnp.uint16
     alive: jnp.int8
+
 
 @dataclass
 class State_noparam(TaskState):
@@ -79,7 +82,6 @@ def setup_project(config, exp_name):
     return project_dir
 
 
-
 def train_paper():
     """ Run this to reproduce the natural environment described in the paper.
     """
@@ -106,18 +108,18 @@ if __name__ == "__main__":
     mode = str(sys.argv[1])
 
     # generic config that you need to change for your simulation
-    config = {"nb_agents": 0,
-              "num_timesteps": 1000,
+    config = {"nb_agents": 1000,
+              "num_timesteps": 1000000,
               "eval_freq": 50,
-              "grid_width": 0,
+              "grid_width": 200,
               "init_food": 0,
               "agent_view": 7,
               "regrowth_scale": 0,
               "niches_scale": 2}
 
     if mode == "natural":
-        train_paper() # retrain the models used in the paper
+        train_paper()  # retrain the models used in the paper
 
     elif mode == "lab":
-        #process_paper("pretrained/seed0") # evaluate existing trained models for seed 0
-        process_paper("pretrained/seed3") # evaluate existing trained models for seed 3
+        # process_paper("pretrained/seed0") # evaluate existing trained models for seed 0
+        process_paper("pretrained/seed3")  # evaluate existing trained models for seed 3
