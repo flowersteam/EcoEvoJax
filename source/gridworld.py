@@ -1,21 +1,34 @@
-""" This script contains the implementation of the environment.
-"""
+# Copyright 2022 The EvoJAX Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+from functools import partial
 from typing import Tuple
+from PIL import Image
+from PIL import ImageDraw
 import numpy as np
+
 import jax
 import jax.numpy as jnp
 from jax import random
 from flax.struct import dataclass
 import math
+
+AGENT_VIEW = 7
 from source.agent import MetaRnnPolicy_bcppr
 from source.agent import metaRNNPolicyState_bcppr
 from evojax.policy.base import PolicyState
 from evojax.task.base import TaskState
 from evojax.task.base import VectorizedTask
-
-
-AGENT_VIEW = 7
-
 
 
 @dataclass
@@ -29,6 +42,8 @@ class AgentStates(object):
     time_alive: jnp.uint16
     time_under_level: jnp.uint16
     alive: jnp.int8
+    nb_food: jnp.ndarray
+    nb_offspring: jnp.uint16
 
 
 @dataclass
@@ -43,25 +58,20 @@ class State(TaskState):
 
 
 def get_ob(state: jnp.ndarray, pos_x: jnp.int32, pos_y: jnp.int32) -> jnp.ndarray:
-    """ Returns an agent's observation.
-    """
     obs = (jax.lax.dynamic_slice(jnp.pad(state, ((AGENT_VIEW, AGENT_VIEW), (AGENT_VIEW, AGENT_VIEW), (0, 0))),
                                  (pos_x - AGENT_VIEW + AGENT_VIEW, pos_y - AGENT_VIEW + AGENT_VIEW, 0),
                                  (2 * AGENT_VIEW + 1, 2 * AGENT_VIEW + 1, 3)))
+    # obs=jnp.ravel(state)
+
     return obs
 
 
 def get_init_state_fn(key: jnp.ndarray, SX, SY, posx, posy, pos_food_x, pos_food_y, niches_scale=200) -> jnp.ndarray:
-    """ Returns the initial state of the grid.
-
-    The grid has four dimensions: 0 corresponds to agents, 1 to resources, 2 to walls and 3 to the climate function
-    """
     grid = jnp.zeros((SX, SY, 4))
-    grid = grid.at[posx, posy, 0].add(1) # position agents
-    grid = grid.at[posx[:5], posy[:5], 0].set(0) # due a technicality the first 5 positions are not used
-    grid = grid.at[pos_food_x, pos_food_y, 1].set(1) # position resources
+    grid = grid.at[posx, posy, 0].add(1)
+    grid = grid.at[posx[:5], posy[:5], 0].set(0)
+    grid = grid.at[pos_food_x, pos_food_y, 1].set(1)
 
-    # ----- determine climate function based on the niching model -----
     new_array = jnp.clip(
         np.asarray([(math.pow(niches_scale, el) - 1) / (niches_scale - 1) for el in np.arange(0, SX) / SX]), 0,
         1)
@@ -73,8 +83,9 @@ def get_init_state_fn(key: jnp.ndarray, SX, SY, posx, posy, pos_food_x, pos_food
         new_array = jnp.append(new_array, new_col)
     new_array = jnp.transpose(jnp.reshape(new_array, (SY, SX)))
     grid = grid.at[:, :, 3].set(new_array)
-    # -------------------------------------
-    # place the walls
+    # grid=grid.at[600:700,:300,3].set(0)
+    # grid=grid.at[:,:,3].set(5)
+
     grid = grid.at[0, :, 2].set(1)
     grid = grid.at[-1, :, 2].set(1)
     grid = grid.at[:, 0, 2].set(1)
@@ -86,16 +97,16 @@ get_obs_vector = jax.vmap(get_ob, in_axes=(None, 0, 0), out_axes=0)
 
 
 class Gridworld(VectorizedTask):
-    """ gridworld task."""
+    """gridworld task."""
 
     def __init__(self,
                  nb_agents: int = 100,
+                 init_food=16000,
                  SX=300,
                  SY=100,
-                 init_food=0,
-                 place_agent=False,
-                 place_resources=False,
                  reproduction_on=True,
+                 place_resources=False,
+                 place_agent=False,
                  params=None,
                  test: bool = False,
                  energy_decay=0.05,
@@ -106,9 +117,10 @@ class Gridworld(VectorizedTask):
                  regrowth_scale=0.002,
                  niches_scale=200,
                  spontaneous_regrow=1 / 200000,
-
+                 wall_kill=True,
                  ):
         self.obs_shape = (AGENT_VIEW, AGENT_VIEW, 3)
+        # self.obs_shape=11*5*4
         self.act_shape = tuple([5, ])
         self.test = test
         self.nb_agents = nb_agents
@@ -129,25 +141,29 @@ class Gridworld(VectorizedTask):
         self.spontaneous_regrow = spontaneous_regrow
         self.place_agent = place_agent
         self.place_resources = place_resources
+        self.params = params
+        self.reproduction_on = reproduction_on
 
         def reset_fn(key):
+
             if self.place_agent:
                 next_key, key = random.split(key)
                 posx = random.randint(next_key, (nb_agents,), int(2 / 5 * SX), int(3 / 5 * SX))
                 next_key, key = random.split(key)
                 posy = random.randint(next_key, (nb_agents,), int(2 / 5 * SX), int(3 / 5 * SX))
                 next_key, key = random.split(key)
+
             else:
                 next_key, key = random.split(key)
-                posx = random.randint(next_key, (nb_agents,), 1, (SX - 1))
+                posx = random.randint(next_key, (self.nb_agents,), 1, (SX - 1))
                 next_key, key = random.split(key)
-                posy = random.randint(next_key, (nb_agents,), 1, (SY - 1))
+                posy = random.randint(next_key, (self.nb_agents,), 1, (SY - 1))
                 next_key, key = random.split(key)
 
             if self.place_resources:
                 # lab environments have a custom location of resources
-                N = 5 # minimum distance from agents
-                N_wall = 5 # minimum distance from wall
+                N = 5  # minimum distance from agents
+                N_wall = 5  # minimum distance from wall
 
                 pos_food_x = jnp.concatenate(
                     (random.randint(next_key, (int(init_food / 4),), int(1 / 2 * SX) + N, (SX - 1 - N_wall)),
@@ -165,15 +181,20 @@ class Gridworld(VectorizedTask):
                 next_key, key = random.split(key)
 
             else:
-                # in natural environments resources are placed randomly
                 pos_food_x = random.randint(next_key, (init_food,), 1, (SX - 1))
                 next_key, key = random.split(key)
                 pos_food_y = random.randint(next_key, (init_food,), 1, (SY - 1))
                 next_key, key = random.split(key)
-
             grid = get_init_state_fn(key, SX, SY, posx, posy, pos_food_x, pos_food_y, niches_scale)
 
             next_key, key = random.split(key)
+            if self.params is None:
+                params = jax.random.normal(
+                    next_key,
+                    (self.nb_agents, self.model.num_params,),
+                ) / 100
+            else:
+                params =self.params
 
             policy_states = self.model.reset_b(jnp.zeros(self.nb_agents, ))
 
@@ -183,7 +204,11 @@ class Gridworld(VectorizedTask):
                                  policy_states=policy_states,
                                  time_alive=jnp.zeros((self.nb_agents,), dtype=jnp.uint16),
                                  time_under_level=jnp.zeros((self.nb_agents,), dtype=jnp.uint16),
-                                 alive=jnp.ones((self.nb_agents,), dtype=jnp.uint16).at[0:9].set(0))
+                                 alive=jnp.ones((self.nb_agents,), dtype=jnp.uint16).at[0:2 * self.nb_agents // 3].set(
+                                     0),
+                                 nb_food=jnp.zeros((self.nb_agents,)),
+                                 nb_offspring=jnp.zeros((self.nb_agents,), dtype=jnp.uint16)
+                                 )
 
             return State(state=grid, obs=get_obs_vector(grid, posx, posy), last_actions=jnp.zeros((self.nb_agents, 5)),
                          rewards=jnp.zeros((self.nb_agents, 1)), agents=agents,
@@ -191,9 +216,8 @@ class Gridworld(VectorizedTask):
 
         self._reset_fn = jax.jit(reset_fn)
 
-        def reproduce(params, posx, posy, energy, time_good_level, key, policy_states, time_alive, alive):
-            """ Implements local reproduction based on a minimal criterion on the energy level of each agent.
-            """
+        def reproduce(params, posx, posy, energy, time_good_level, key, policy_states, time_alive, alive, nb_food,
+                      nb_offspring):
             # use agent 0 to 4 as a dump always dead if no dead put in there to be sure not overiding the alive ones
             # but maybe better to just make sure that there are 5 places available by checking if 5 dead (but this way may be better if we augment the 5)
             dead = 1 - alive
@@ -214,11 +238,13 @@ class Gridworld(VectorizedTask):
             next_key, key = random.split(key)
             params = params
             # new agents params with mutate , and also take pos of parents
-            if reproduction_on:
+            if self.reproduction_on:
                 params = params.at[empty_spots].set(
                     params[reproducer_spots] + 0.02 * jax.random.normal(next_key, (5, params.shape[1])))
                 posx = posx.at[empty_spots].set(posx[reproducer_spots])
                 posy = posy.at[empty_spots].set(posy[reproducer_spots])
+
+            # new agents energy set at max
 
             # multiply by reproducer to be sure that the one that got selected by reproducer spot were reproducer indeed,
             # in case nb reproducer <5 but again maybe we can just check that at least 5 reproducer but weird
@@ -226,8 +252,12 @@ class Gridworld(VectorizedTask):
             energy = energy.at[0:5].set(0.)
 
             # new agents alive and time alive , time_good_alive, and RNN state set at 0
+
             alive = alive.at[empty_spots].set(1 * reproducer[reproducer_spots])
             time_alive = time_alive.at[empty_spots].set(0)
+            nb_food = nb_food.at[empty_spots].set(0)
+            nb_offspring = nb_offspring.at[empty_spots].set(0)
+            nb_offspring = nb_offspring.at[reproducer_spots].add((empty_spots > 4))
             time_good_level = time_good_level.at[empty_spots].set(0)
             policy_states = metaRNNPolicyState_bcppr(
                 lstm_h=policy_states.lstm_h.at[empty_spots].set(jnp.zeros(policy_states.lstm_h.shape[1])),
@@ -242,7 +272,8 @@ class Gridworld(VectorizedTask):
             # kill the dump
             alive = alive.at[0:5].set(0)
 
-            return (params, posx, posy, energy, time_good_level, policy_states, time_alive, alive)
+            return (
+            params, posx, posy, energy, time_good_level, policy_states, time_alive, alive, nb_food, nb_offspring)
 
         def step_fn(state):
             key = state.key
@@ -252,6 +283,8 @@ class Gridworld(VectorizedTask):
             actions_logit, policy_states = self.model.get_actions(state, state.agents.params,
                                                                   state.agents.policy_states)
             actions = jax.nn.one_hot(jax.random.categorical(next_key, actions_logit * 50, axis=-1), 5)
+            # actions=jax.nn.one_hot(jnp.argmax(actions_logit,axis=-1),5)
+
             grid = state.state
             energy = state.agents.energy
             alive = state.agents.alive
@@ -263,8 +296,11 @@ class Gridworld(VectorizedTask):
 
             # wall
             hit_wall = state.state[posx, posy, 2] > 0
+            if (wall_kill):
+                alive = jnp.where(hit_wall, 0, alive)
             posx = jnp.where(hit_wall, state.agents.posx, posx)
             posy = jnp.where(hit_wall, state.agents.posy, posy)
+
             posx = jnp.clip(posx, 0, SX - 1)
             posy = jnp.clip(posy, 0, SY - 1)
             grid = grid.at[state.agents.posx, state.agents.posy, 0].set(0)
@@ -272,24 +308,36 @@ class Gridworld(VectorizedTask):
             grid = grid.at[posx, posy, 0].add(1 * (alive > 0))
 
             ### collect food
+
             rewards = (alive > 0) * (grid[posx, posy, 1] > 0) * (1 / (grid[posx, posy, 0] + 1e-10))
             grid = grid.at[posx, posy, 1].add(-1 * (alive > 0))
             grid = grid.at[:, :, 1].set(jnp.clip(grid[:, :, 1], 0, 1))
 
-            # regrow resources
+            nb_food = state.agents.nb_food + rewards
+
+            # regrow
+
             num_neighbs = jax.scipy.signal.convolve2d(grid[:, :, 1], jnp.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]]),
                                                       mode="same")
             scale = grid[:, :, 3]
             scale_constant = regrowth_scale
             next_key, key = random.split(state.key)
 
-            if scale_constant != 0:
-                num_neighbs = jnp.where(num_neighbs != 1, 0, num_neighbs)
-                num_neighbs = jnp.where(num_neighbs == 1, 0.002, num_neighbs)
+            if scale_constant:
+
+                num_neighbs = jnp.where(num_neighbs == 0, 0, num_neighbs)
+                num_neighbs = jnp.where(num_neighbs == 1, 0.01 / 5, num_neighbs)
+                num_neighbs = jnp.where(num_neighbs == 2, 0.01 / scale_constant, num_neighbs)
+                num_neighbs = jnp.where(num_neighbs == 3, 0.05 / scale_constant, num_neighbs)
+                num_neighbs = jnp.where(num_neighbs > 3, 0, num_neighbs)
                 num_neighbs = jnp.multiply(num_neighbs, scale)
                 num_neighbs = jnp.where(num_neighbs > 0, num_neighbs, 0)
+                # num_neighbs = num_neighbs + self.spontaneous_regrow * scale
                 num_neighbs = num_neighbs + self.spontaneous_regrow
+                # num_neighbs=num_neighbs.at[350:356,98:102].set(1/40)
+
                 num_neighbs = jnp.clip(num_neighbs - grid[:, :, 2], 0, 1)
+
                 grid = grid.at[:, :, 1].add(random.bernoulli(next_key, num_neighbs))
 
             ####
@@ -298,19 +346,23 @@ class Gridworld(VectorizedTask):
             # decay of energy and clipping
             energy = energy - self.energy_decay + rewards
             energy = jnp.clip(energy, -1000, self.max_ener)
+
             time_good_level = jnp.where(energy > 0, (state.agents.time_good_level + 1) * alive, 0)
+
             time_alive = state.agents.time_alive
 
-            # look if still alive
+            # look if still aliv
+
             time_alive = jnp.where(alive > 0, time_alive + 1, 0)
 
             # compute reproducer and go through the function only if there is one
             reproducer = jnp.where(state.agents.time_good_level > self.time_reproduce, 1, 0)
             next_key, key = random.split(key)
-            params, posx, posy, energy, time_good_level, policy_states, time_alive, alive = jax.lax.cond(
-                reproducer.sum() > 0, reproduce, lambda y, z, a, b, c, d, e, f, g: (y, z, a, b, c, e, f, g), *(
-                state.agents.params, posx, posy, energy, time_good_level, next_key, state.agents.policy_states,
-                time_alive, alive))
+            params, posx, posy, energy, time_good_level, policy_states, time_alive, alive, nb_food, nb_offspring = jax.lax.cond(
+                reproducer.sum() > 0, reproduce, lambda y, z, a, b, c, d, e, f, g, h, i: (y, z, a, b, c, e, f, g, h, i),
+                *(
+                    state.agents.params, posx, posy, energy, time_good_level, next_key, state.agents.policy_states,
+                    time_alive, alive, nb_food, state.agents.nb_offspring))
 
             time_under_level = jnp.where(energy < 0, state.agents.time_under_level + 1, 0)
             alive = jnp.where(jnp.logical_or(time_alive > self.max_age, time_under_level > self.time_death), 0, alive)
@@ -321,13 +373,14 @@ class Gridworld(VectorizedTask):
                               rewards=jnp.expand_dims(rewards, -1),
                               agents=AgentStates(posx=posx, posy=posy, energy=energy, time_good_level=time_good_level,
                                                  params=params, policy_states=policy_states,
-                                                 time_alive=time_alive, time_under_level=time_under_level, alive=alive),
+                                                 time_alive=time_alive, time_under_level=time_under_level, alive=alive,
+                                                 nb_food=nb_food, nb_offspring=nb_offspring),
                               steps=steps, key=key)
             # keep it in case we let agent several trials
             state = jax.lax.cond(
                 done, lambda x: reset_fn(state.key), lambda x: x, cur_state)
 
-            return state,rewards, energy
+            return state, rewards, energy
 
         self._step_fn = jax.jit(step_fn)
 
@@ -338,6 +391,5 @@ class Gridworld(VectorizedTask):
              state: State,
              ) -> Tuple[State, jnp.ndarray, jnp.ndarray]:
         return self._step_fn(state)
-
 
 

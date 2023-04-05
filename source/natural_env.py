@@ -13,7 +13,6 @@ from evojax.util import save_model, load_model
 import yaml
 
 sys.path.append(os.getcwd())
-from source.agent import MetaRnnPolicy_bcppr
 from source.gridworld import Gridworld
 from source.utils import VideoWriter
 
@@ -33,79 +32,84 @@ def simulate(project_dir):
     with open(project_dir + "/config.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    # initialize policy
-    model = MetaRnnPolicy_bcppr(input_dim=((config["agent_view"] * 2 + 1), (config["agent_view"] * 2 + 1), 3),
-                                hidden_dim=4,
-                                output_dim=5,
-                                encoder_layers=[],
-                                hidden_layers=[8])
-    key = jax.random.PRNGKey(np.random.randint(42))
+    key = jax.random.PRNGKey(config["seed"])
     next_key, key = random.split(key)
-    params = jax.random.normal(
-        next_key,
-        (config["nb_agents"], model.num_params,),
-    ) / 100
 
-    # initialize environment
-    env = Gridworld(SX=config["grid_length"],
-                    SY=config["grid_width"],
+
+
+    env = Gridworld(place_agent=config["place_agent"],
                     init_food=config["init_food"],
+                    SX=config["grid_length"],
+                    SY=config["grid_width"],
                     nb_agents=config["nb_agents"],
-                    params= params,
                     regrowth_scale=config["regrowth_scale"],
-                    niches_scale=config["niches_scale"])
+                    niches_scale=config["niches_scale"],
+                    max_age=config["max_age"],
+                    time_reproduce=config["time_reproduce"],
+                    time_death=config["time_death"],
+                    energy_decay=config["energy_decay"],
+                    spontaneous_regrow=config["spontaneous_regrow"],
+                    wall_kill=config["wall_kill"],
+                    )
 
     state = env.reset(next_key)
 
     keep_mean_rewards = []
     keep_max_rewards = []
 
-    timesteps = list(range(config["num_timesteps"]))
-    vid = VideoWriter(project_dir + "/train/media/training.mp4", 20.0)
-
     # ----- main simulation begins -----
-    for timestep in timesteps:
-
-
+    for gen in range(config["num_gens"]):
         accumulated_rewards = jnp.zeros(config["nb_agents"])
 
-        next_key, key = random.split(key)
+        if gen % config["eval_freq"] == 0:
+            vid = VideoWriter(project_dir + "/train/media/gen_" + str(gen) + ".mp4", 20.0)
 
-        state, reward, _ = env.step(state)
-        accumulated_rewards = accumulated_rewards + reward
 
-        if timestep % config["eval_freq"] == 0:
-            # every eval_freq generations we save the video of the generation
-            rgb_im = state.state[:, :, :3]
-            rgb_im = jnp.clip(rgb_im, 0, 1)
+            print("gen ", str(gen), " population size ", str(state.agents.alive.sum()))
 
-            # change color scheme to white green and black
-            rgb_im = jnp.clip(rgb_im + jnp.expand_dims(state.state[:, :, 1], axis=-1), 0, 1)
-            rgb_im = rgb_im.at[:, :, 1].set(0)
-            rgb_im = 1 - rgb_im
-            rgb_im = rgb_im - jnp.expand_dims(state.state[:, :, 0], axis=-1)
-            rgb_im = np.repeat(rgb_im, 2, axis=0)
-            rgb_im = np.repeat(rgb_im, 2, axis=1)
+        for timestep in range(config["gen_length"]):
 
-            vid.add(rgb_im)
+
+            state, reward, _ = env.step(state)
+            accumulated_rewards = accumulated_rewards + reward
+
+            if gen % config["eval_freq"] == 0:
+
+                if state.agents.alive.sum() == 0:
+                    print("all agents died")
+                # every eval_freq generations we save the video of the generation
+                rgb_im = state.state[:, :, :3]
+                rgb_im = jnp.clip(rgb_im, 0, 1)
+
+                # change color scheme to white green and black
+                rgb_im = jnp.clip(rgb_im + jnp.expand_dims(state.state[:, :, 1], axis=-1), 0, 1)
+                rgb_im = rgb_im.at[:, :, 1].set(0)
+                rgb_im = 1 - rgb_im
+
+                rgb_im = rgb_im - jnp.expand_dims(state.state[:, :, 0], axis=-1)
+                rgb_im = np.repeat(rgb_im, 2, axis=0)
+                rgb_im = np.repeat(rgb_im, 2, axis=1)
+
+                vid.add(rgb_im)
 
         keep_mean_rewards.append(np.mean(accumulated_rewards))
         keep_max_rewards.append(np.max(accumulated_rewards))
 
-        if timestep % config["eval_freq"] == 0:
-
+        if gen % config["eval_freq"] * 10 == 0:
+            vid.close()
             # save training data and plots
-            with open(project_dir + "/train/data/gen_" + str(timestep) + ".pkl", "wb") as f:
+            with open(project_dir + "/train/data/gen_" + str(gen) + ".pkl", "wb") as f:
                 pickle.dump({"mean_rewards": keep_mean_rewards,
                              "max_rewards": keep_max_rewards}, f)
 
-            save_model(model_dir=project_dir + "/train/models", model_name="step_" + str(timestep), params=params)
+            save_model(model_dir=project_dir + "/train/models", model_name="step_" + str(gen),
+                       params=state.agents.params)
 
             plt.plot(range(len(keep_mean_rewards)), keep_mean_rewards, label="mean")
             plt.plot(range(len(keep_max_rewards)), keep_max_rewards, label="max")
             plt.ylabel("Training rewards")
             plt.legend()
-            plt.savefig(project_dir + "/train/media/rewards_" + str(timestep) + ".png")
+            plt.savefig(project_dir + "/train/media/rewards_" + str(gen) + ".png")
             plt.clf()
 
 
